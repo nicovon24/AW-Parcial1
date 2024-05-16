@@ -50,4 +50,43 @@ RecetasRouter.post('/', async (req, res) => {
     }
 });
 
+RecetasRouter.put('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { descripcion, ingredientes, nombre } = req.body;
+
+        const fileIngredientes = await readFile("./json/ingredientes.json", "utf-8");
+        const dataIngredientes = fileIngredientes ? JSON.parse(fileIngredientes) : [];
+
+        const ingredientesNoEncontrados = ingredientes.filter(ingrediente =>
+            !dataIngredientes.some(ing => ing.id === ingrediente)
+        );
+
+        if (ingredientesNoEncontrados.length > 0) {
+            return res.status(400).json({ message: "Los siguientes ingredientes no existen:", ingredientes: ingredientesNoEncontrados });
+        }
+
+        const indexToUpdate = dataRecetas.findIndex(recipe => recipe.id === parseInt(id));
+
+        if (indexToUpdate === -1) {
+            return res.status(404).json({ message: "Receta no encontrada" });
+        }
+
+        dataRecetas[indexToUpdate] = {
+            descripcion,
+            ingredientes,
+            nombre,
+            id: parseInt(id)
+        };
+
+        await writeFile("./json/recetas.json", JSON.stringify(dataRecetas, null, 2));
+
+        res.status(200).json({ message: "Receta actualizada correctamente", receta: dataRecetas[indexToUpdate] });
+    } catch (error) {
+        console.error("Error al actualizar la receta:", error);
+        res.status(500).send("Error interno del servidor");
+    }
+});
+
+
 export default RecetasRouter;
