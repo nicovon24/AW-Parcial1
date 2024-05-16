@@ -1,0 +1,18 @@
+[
+  {
+    "descripcion": "a",
+    "ingredientes": [
+      1
+    ],
+    "nombre": "Augusto",
+    "id": 1
+  },
+  {
+    "descripcion": "a",
+    "ingredientes": [
+      2
+    ],
+    "nombre": "Augusto",
+    "id": 2
+  }
+]
